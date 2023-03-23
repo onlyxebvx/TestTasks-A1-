@@ -1,0 +1,39 @@
+
+-- создание таблицы postings
+create table postings(
+                     "Mat. Doc." bigint,
+                     Item int,
+                     "Doc. Date" date,
+                     "Pstng Date" date,
+                     "Material Description" varchar(360),
+                     Quantity int,
+                     BUn varchar(10),
+                     "Amount LC" numeric,
+                     Crcy varchar(10),
+                     "User Name" varchar(35)
+)
+
+-- создание таблицы logins
+create table logins (
+                        Application varchar(255),
+                        AppAccountName varchar(255),
+                        IsActive boolean,
+                        JobTitle varchar(255),
+                        Department varchar(255)
+);
+
+-- 3) создание булевого поле "авторизованная поставка" и статус "User Name"
+ALTER TABLE postings ADD COLUMN authorized_supply boolean DEFAULT false;
+
+UPDATE postings
+SET authorized_supply = true
+FROM logins
+WHERE postings."User Name" = logins.AppAccountName
+  AND logins.IsActive = true;
+
+-- 4) Cохранить в SQL СУБД данные файла logins.csv
+\copy logins FROM 'C:\Users\bodna\IdeaProjects\lab(AIPRP)\A1.Tasks\src\main\java\org\A1\task3\logins.csv' DELIMITER ',' CSV HEADER;
+
+-- 5) Сохранить в SQL СУБД данные файла postings.csv (с дополнительным полем)
+\copy postings FROM 'C:\Users\bodna\IdeaProjects\lab(AIPRP)\A1.Tasks\src\main\java\org\A1\task3\postinggsss.csv' DELIMITER ';' CSV HEADER;
+
